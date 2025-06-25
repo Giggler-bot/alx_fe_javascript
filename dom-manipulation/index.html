@@ -3,30 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css">
   <title>Dynamic Quote Generator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <main class="container">
+    <h1>🎯 Dynamic Quote Generator</h1>
 
-    <h1 class="h1">Dynamic Quote Generator</h1>
-
-    <select id="categoryFilter" onchange="filterQuotes()">
+    <div class="controls">
+      <label for="categoryFilter">Filter by Category:</label>
+      <select id="categoryFilter" onchange="filterQuotes()">
         <option value="all">All Categories</option>
-        <!-- Categories will be dynamically populated here -->
-    </select>
-
-
-    <div id="quoteDisplay"></div>
-
-    <button id="newQuote">Show New Quote</button>
-
-    <div>
-        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button id="addQuoteBtn">Add Quote</button>
+      </select>
     </div>
 
-  
+    <div id="quoteDisplay" class="quote-box">Your quote will appear here</div>
+    <button id="newQuote">Show New Quote</button>
+
+    <section class="form-section">
+      <h2>Add a New Quote</h2>
+      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+      <button onclick="addQuote()">Add Quote</button>
+    </section>
+
+    <section class="json-section">
+      <h2>Import / Export Quotes</h2>
+      <button onclick="exportToJsonFile()">Export Quotes</button>
+      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
