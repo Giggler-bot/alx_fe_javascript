@@ -48,7 +48,7 @@ function addQuote() {
   document.getElementById('newQuoteCategory').value = '';
 }
 
-// Populate category filter
+// Populate categories dropdown
 function populateCategories() {
   const filter = document.getElementById('categoryFilter');
   const unique = [...new Set(quotes.map(q => q.category))];
@@ -59,21 +59,21 @@ function populateCategories() {
     opt.textContent = cat;
     filter.appendChild(opt);
   });
-  // Restore previous selection
+
   const saved = localStorage.getItem('selectedCategory');
   if (saved) {
     filter.value = saved;
   }
 }
 
-// Filter quotes by category
+// Filter by category
 function filterQuotes() {
   const selected = document.getElementById('categoryFilter').value;
   localStorage.setItem('selectedCategory', selected);
   displayRandomQuote();
 }
 
-// Export quotes as JSON
+// Export quotes to JSON file
 function exportQuotes() {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const link = document.createElement('a');
@@ -96,38 +96,38 @@ function importFromJsonFile(event) {
   reader.readAsText(event.target.files[0]);
 }
 
-// Simulate server sync
-function fetchQuotesFromServer() {
-  const serverQuotes = [
-    { text: "A journey of a thousand miles begins with a single step.", category: "Wisdom" },
-    { text: "The only true wisdom is in knowing you know nothing.", category: "Philosophy" },
-    { text: "Life is what happens when you're busy making other plans.", category: "Life" }
-  ];
+// 🟢 FINAL REQUIREMENT — Fetch from mock server (JSONPlaceholder)
+async function fetchQuotesFromServer() {
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    const serverQuotes = data.slice(0, 5).map(post => ({
+      text: post.title,
+      category: 'Server'
+    }));
 
-  setTimeout(() => {
-    const existing = JSON.parse(localStorage.getItem("quotes")) || [];
-    const merged = mergeQuotes(existing, serverQuotes);
-    localStorage.setItem("quotes", JSON.stringify(merged));
-    quotes = merged;
+    // Merge without duplicates
+    const localTexts = new Set(quotes.map(q => q.text));
+    serverQuotes.forEach(q => {
+      if (!localTexts.has(q.text)) {
+        quotes.push(q);
+      }
+    });
+
+    saveQuotes();
     populateCategories();
     displayRandomQuote();
     console.log("Quotes synced from server.");
-  }, 1000);
+
+  } catch (error) {
+    console.error('Error syncing quotes from server:', error);
+  }
 }
 
-// Merge server quotes with local ones
-function mergeQuotes(local, server) {
-  const texts = new Set(local.map(q => q.text));
-  server.forEach(q => {
-    if (!texts.has(q.text)) local.push(q);
-  });
-  return local;
-}
-
-// Initialize
+// Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
   loadQuotes();
-  fetchQuotesFromServer();
+  fetchQuotesFromServer(); // simulate remote sync
   populateCategories();
   displayRandomQuote();
 
