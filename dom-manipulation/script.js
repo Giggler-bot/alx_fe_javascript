@@ -90,7 +90,7 @@ async function fetchQuotesFromServer() {
       saveQuotes();
       populateCategories();
       displayRandomQuote();
-      showNotification(`${newQuotesCount} new quotes synced from server`);
+      showNotification("Quotes synced with server!");
     }
 
   } catch (err) {
